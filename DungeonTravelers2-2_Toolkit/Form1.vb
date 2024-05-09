@@ -234,7 +234,46 @@ Public Class Form1
     End Function
 
     'TEX EXTRACTOR
-    Private Sub VITAToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles VITAToolStripMenuItem1.Click
+    Private Sub PCBulkToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles BulkToolStripMenuItem1.Click
+        Dim WorkingTEXFileFolder = ""
+        fbdBulkTEX.Description = "Select Folder that contains VITA .TEX you wish to extract"
+        If fbdBulkTEX.ShowDialog = DialogResult.OK Then
+            WorkingTEXFileFolder = fbdBulkTEX.SelectedPath
+        Else
+            Exit Sub
+        End If
+
+        For Each f In Directory.GetFiles(WorkingTEXFileFolder, "*.tex")
+            ExtractTEX(f, "PC")
+        Next
+        MessageBox.Show("Extracted TEXs")
+    End Sub
+    Private Sub PCSingleToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SingleToolStripMenuItem1.Click
+        Dim WorkingTEXFile = ""
+        If ofdVitaTex.ShowDialog = DialogResult.OK Then
+            WorkingTEXFile = ofdVitaTex.FileName
+        Else
+            Exit Sub
+        End If
+
+        ExtractTEX(WorkingTEXFile, "PC")
+        MessageBox.Show("Extracted TEX")
+    End Sub
+    Private Sub VITABulkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BulkToolStripMenuItem.Click
+        Dim WorkingTEXFileFolder = ""
+        fbdBulkTEX.Description = "Select Folder that contains VITA .TEX you wish to extract"
+        If fbdBulkTEX.ShowDialog = DialogResult.OK Then
+            WorkingTEXFileFolder = fbdBulkTEX.SelectedPath
+        Else
+            Exit Sub
+        End If
+
+        For Each f In Directory.GetFiles(WorkingTEXFileFolder, "*.tex")
+            ExtractTEX(f, "VITA")
+        Next
+        MessageBox.Show("Extracted TEXs")
+    End Sub
+    Private Sub VITASingleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SingleToolStripMenuItem.Click
         Dim WorkingTEXFile = ""
         ofdVitaTex.Title = "Select VITA .TEX you wish to extract"
         If ofdVitaTex.ShowDialog = DialogResult.OK Then
@@ -244,21 +283,16 @@ Public Class Form1
         End If
 
         ExtractTEX(WorkingTEXFile, "VITA")
-    End Sub
-    Private Sub PCToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles PCToolStripMenuItem1.Click
-        Dim WorkingTEXFile = ""
-        If ofdVitaTex.ShowDialog = DialogResult.OK Then
-            WorkingTEXFile = ofdVitaTex.FileName
-        Else
-            Exit Sub
-        End If
-
-        ExtractTEX(WorkingTEXFile, "PC")
+        MessageBox.Show("Extracted TEX")
     End Sub
     Public Function ExtractTEX(ByVal InputFile As String, ByVal System As String)
         'Setup Directory
         Dim TEXName = Path.GetFileNameWithoutExtension(InputFile)
         Dim ExportTEX = "Export\" & TEXName & ".png"
+
+        If Directory.Exists("Export") = False Then
+            Directory.CreateDirectory("Export")
+        End If
 
         Using br As BinaryReader = New BinaryReader(File.Open(InputFile, FileMode.Open))
             If Encoding.UTF8.GetString(br.ReadBytes(&H7)) = "Texture" = False Then
@@ -315,7 +349,7 @@ Public Class Form1
             End If
         End Using
 
-        MessageBox.Show("Extracted TEX")
+        'MessageBox.Show("Extracted TEX")
     End Function
 
 

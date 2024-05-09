@@ -31,7 +31,11 @@ Partial Class Form1
         Me.PCKCreatorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.VITAToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BulkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SingleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PCToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BulkToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SingleToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.TEXCreatorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VITAToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PCToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -43,6 +47,7 @@ Partial Class Form1
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ofdNewPNGTex = New System.Windows.Forms.OpenFileDialog()
         Me.fbdNewPCK = New System.Windows.Forms.FolderBrowserDialog()
+        Me.fbdBulkTEX = New System.Windows.Forms.FolderBrowserDialog()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -102,15 +107,41 @@ Partial Class Form1
         '
         'VITAToolStripMenuItem1
         '
+        Me.VITAToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BulkToolStripMenuItem, Me.SingleToolStripMenuItem})
         Me.VITAToolStripMenuItem1.Name = "VITAToolStripMenuItem1"
-        Me.VITAToolStripMenuItem1.Size = New System.Drawing.Size(97, 22)
+        Me.VITAToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
         Me.VITAToolStripMenuItem1.Text = "VITA"
+        '
+        'BulkToolStripMenuItem
+        '
+        Me.BulkToolStripMenuItem.Name = "BulkToolStripMenuItem"
+        Me.BulkToolStripMenuItem.Size = New System.Drawing.Size(106, 22)
+        Me.BulkToolStripMenuItem.Text = "Bulk"
+        '
+        'SingleToolStripMenuItem
+        '
+        Me.SingleToolStripMenuItem.Name = "SingleToolStripMenuItem"
+        Me.SingleToolStripMenuItem.Size = New System.Drawing.Size(106, 22)
+        Me.SingleToolStripMenuItem.Text = "Single"
         '
         'PCToolStripMenuItem1
         '
+        Me.PCToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BulkToolStripMenuItem1, Me.SingleToolStripMenuItem1})
         Me.PCToolStripMenuItem1.Name = "PCToolStripMenuItem1"
-        Me.PCToolStripMenuItem1.Size = New System.Drawing.Size(97, 22)
+        Me.PCToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
         Me.PCToolStripMenuItem1.Text = "PC"
+        '
+        'BulkToolStripMenuItem1
+        '
+        Me.BulkToolStripMenuItem1.Name = "BulkToolStripMenuItem1"
+        Me.BulkToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.BulkToolStripMenuItem1.Text = "Bulk"
+        '
+        'SingleToolStripMenuItem1
+        '
+        Me.SingleToolStripMenuItem1.Name = "SingleToolStripMenuItem1"
+        Me.SingleToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.SingleToolStripMenuItem1.Text = "Single"
         '
         'TEXCreatorToolStripMenuItem
         '
@@ -214,4 +245,9 @@ Partial Class Form1
     Friend WithEvents ExitToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExitToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents fbdNewPCK As FolderBrowserDialog
+    Friend WithEvents BulkToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SingleToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents fbdBulkTEX As FolderBrowserDialog
+    Friend WithEvents BulkToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents SingleToolStripMenuItem1 As ToolStripMenuItem
 End Class
