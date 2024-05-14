@@ -40,6 +40,10 @@ Partial Class Form1
         Me.VITAToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PCToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PCVitaTEXToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExtraToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImageTestToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RawBytesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RawByteImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ofdPCKExtractor = New System.Windows.Forms.OpenFileDialog()
         Me.ofdVitaTex = New System.Windows.Forms.OpenFileDialog()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -53,7 +57,7 @@ Partial Class Form1
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.ToolsToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.ExtraToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Size = New System.Drawing.Size(353, 24)
@@ -89,27 +93,27 @@ Partial Class Form1
         'PCKExtractorToolStripMenuItem
         '
         Me.PCKExtractorToolStripMenuItem.Name = "PCKExtractorToolStripMenuItem"
-        Me.PCKExtractorToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.PCKExtractorToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.PCKExtractorToolStripMenuItem.Text = "PCK Extractor"
         '
         'PCKCreatorToolStripMenuItem
         '
         Me.PCKCreatorToolStripMenuItem.Name = "PCKCreatorToolStripMenuItem"
-        Me.PCKCreatorToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.PCKCreatorToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.PCKCreatorToolStripMenuItem.Text = "PCK Creator"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VITAToolStripMenuItem1, Me.PCToolStripMenuItem1})
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(150, 22)
         Me.ToolStripMenuItem1.Text = "TEX Extractor"
         '
         'VITAToolStripMenuItem1
         '
         Me.VITAToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BulkToolStripMenuItem, Me.SingleToolStripMenuItem})
         Me.VITAToolStripMenuItem1.Name = "VITAToolStripMenuItem1"
-        Me.VITAToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.VITAToolStripMenuItem1.Size = New System.Drawing.Size(97, 22)
         Me.VITAToolStripMenuItem1.Text = "VITA"
         '
         'BulkToolStripMenuItem
@@ -128,26 +132,26 @@ Partial Class Form1
         '
         Me.PCToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BulkToolStripMenuItem1, Me.SingleToolStripMenuItem1})
         Me.PCToolStripMenuItem1.Name = "PCToolStripMenuItem1"
-        Me.PCToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.PCToolStripMenuItem1.Size = New System.Drawing.Size(97, 22)
         Me.PCToolStripMenuItem1.Text = "PC"
         '
         'BulkToolStripMenuItem1
         '
         Me.BulkToolStripMenuItem1.Name = "BulkToolStripMenuItem1"
-        Me.BulkToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.BulkToolStripMenuItem1.Size = New System.Drawing.Size(106, 22)
         Me.BulkToolStripMenuItem1.Text = "Bulk"
         '
         'SingleToolStripMenuItem1
         '
         Me.SingleToolStripMenuItem1.Name = "SingleToolStripMenuItem1"
-        Me.SingleToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.SingleToolStripMenuItem1.Size = New System.Drawing.Size(106, 22)
         Me.SingleToolStripMenuItem1.Text = "Single"
         '
         'TEXCreatorToolStripMenuItem
         '
         Me.TEXCreatorToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VITAToolStripMenuItem, Me.PCToolStripMenuItem})
         Me.TEXCreatorToolStripMenuItem.Name = "TEXCreatorToolStripMenuItem"
-        Me.TEXCreatorToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.TEXCreatorToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.TEXCreatorToolStripMenuItem.Text = "TEX Creator"
         '
         'VITAToolStripMenuItem
@@ -165,8 +169,34 @@ Partial Class Form1
         'PCVitaTEXToolStripMenuItem
         '
         Me.PCVitaTEXToolStripMenuItem.Name = "PCVitaTEXToolStripMenuItem"
-        Me.PCVitaTEXToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.PCVitaTEXToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.PCVitaTEXToolStripMenuItem.Text = "PC -> Vita TEX"
+        '
+        'ExtraToolStripMenuItem
+        '
+        Me.ExtraToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImageTestToolStripMenuItem})
+        Me.ExtraToolStripMenuItem.Name = "ExtraToolStripMenuItem"
+        Me.ExtraToolStripMenuItem.Size = New System.Drawing.Size(45, 20)
+        Me.ExtraToolStripMenuItem.Text = "Extra"
+        '
+        'ImageTestToolStripMenuItem
+        '
+        Me.ImageTestToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RawBytesToolStripMenuItem, Me.RawByteImageToolStripMenuItem})
+        Me.ImageTestToolStripMenuItem.Name = "ImageTestToolStripMenuItem"
+        Me.ImageTestToolStripMenuItem.Size = New System.Drawing.Size(107, 22)
+        Me.ImageTestToolStripMenuItem.Text = "Image"
+        '
+        'RawBytesToolStripMenuItem
+        '
+        Me.RawBytesToolStripMenuItem.Name = "RawBytesToolStripMenuItem"
+        Me.RawBytesToolStripMenuItem.Size = New System.Drawing.Size(171, 22)
+        Me.RawBytesToolStripMenuItem.Text = "Raw Bytes Viewer"
+        '
+        'RawByteImageToolStripMenuItem
+        '
+        Me.RawByteImageToolStripMenuItem.Name = "RawByteImageToolStripMenuItem"
+        Me.RawByteImageToolStripMenuItem.Size = New System.Drawing.Size(171, 22)
+        Me.RawByteImageToolStripMenuItem.Text = "Raw Bytes >Image"
         '
         'ofdPCKExtractor
         '
@@ -196,7 +226,7 @@ Partial Class Form1
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(54, 15)
         Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Yuvi v1.0"
+        Me.Label2.Text = "Yuvi v1.2"
         '
         'ofdNewPNGTex
         '
@@ -250,4 +280,8 @@ Partial Class Form1
     Friend WithEvents fbdBulkTEX As FolderBrowserDialog
     Friend WithEvents BulkToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents SingleToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents ExtraToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ImageTestToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RawBytesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RawByteImageToolStripMenuItem As ToolStripMenuItem
 End Class

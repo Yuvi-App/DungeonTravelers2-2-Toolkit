@@ -1,11 +1,8 @@
-﻿Imports System.Buffers
-Imports System.Data.Common
-Imports System.IO
-Imports System.IO.Compression
-Imports System.Security.Cryptography
+﻿Imports System.IO
 Imports System.Text
-Imports System.Drawing.Imaging
 Imports System.Runtime.InteropServices
+Imports System.Drawing.Imaging
+
 
 Public Class Form1
     'PCK EXTRACTOR
@@ -107,6 +104,7 @@ Public Class Form1
         End Using
         MessageBox.Show("Extracted PCK")
     End Function
+
 
     'PCK CREATOR
     Private Sub PCKCreatorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PCKCreatorToolStripMenuItem.Click
@@ -233,6 +231,7 @@ Public Class Form1
         MessageBox.Show("Created new PCK Successfully")
     End Function
 
+
     'TEX EXTRACTOR
     Private Sub PCBulkToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles BulkToolStripMenuItem1.Click
         Dim WorkingTEXFileFolder = ""
@@ -290,6 +289,8 @@ Public Class Form1
         Dim TEXName = Path.GetFileNameWithoutExtension(InputFile)
         Dim ExportTEX = "Export\" & TEXName & ".png"
 
+        If File.Exists(ExportTEX) Then File.Delete(ExportTEX)
+
         If Directory.Exists("Export") = False Then
             Directory.CreateDirectory("Export")
         End If
@@ -301,6 +302,7 @@ Public Class Form1
             End If
 
             br.BaseStream.Seek(&H14, SeekOrigin.Begin)
+            Dim FileSize As UInt32
             Dim PaletteStartPOS As UInt32
             Dim RGBAType As UInt16
             Dim RGBAFlags As UInt16
@@ -309,7 +311,7 @@ Public Class Form1
             Dim ImageHeight As UInt32
             Dim ImageStartPOS As UInt32
             If System = "VITA" Then
-                PaletteStartPOS = br.ReadUInt32
+                FileSize = br.ReadUInt32
                 RGBAType = br.ReadUInt16
                 RGBAFlags = br.ReadUInt16
                 ImageFileLength = br.ReadUInt32
@@ -317,7 +319,7 @@ Public Class Form1
                 ImageHeight = br.ReadUInt32
                 ImageStartPOS = br.BaseStream.Position
             ElseIf System = "PC" Then
-                PaletteStartPOS = br.ReadUInt32
+                FileSize = br.ReadUInt32
                 RGBAType = br.ReadUInt16
                 RGBAFlags = br.ReadUInt16
                 Dim PCU1 = br.ReadUInt32
@@ -327,29 +329,50 @@ Public Class Form1
                 ImageStartPOS = br.BaseStream.Position
             End If
 
+            'Set Type of BPP
+            Dim InputPixelFormat As PixelFormat
+            If RGBAType = 512 Then '0x200
+                'RGBA8 (palletized) r8g8b8a8
+                InputPixelFormat = PixelFormat.Format8bppIndexed
+            ElseIf RGBAType = 16384 Then
+                InputPixelFormat = PixelFormat.Format32bppArgb
+            Else
+                MessageBox.Show("Found Different RGBA Type " + RGBAType.ToString)
+            End If
+
             'Check if PNG
             Dim CheckByte = br.ReadUInt32
             If CheckByte = 1196314761 Then
                 'Get PNG
                 br.BaseStream.Seek(ImageStartPOS, SeekOrigin.Begin)
                 Dim ImageBytes = br.ReadBytes(ImageFileLength)
-
-                If File.Exists(ExportTEX) Then File.Delete(ExportTEX)
                 File.WriteAllBytes(ExportTEX, ImageBytes)
+
             ElseIf CheckByte = 926374476 Then
                 'Got LZ77
                 Dim lzsszsize = ImageFileLength
                 br.BaseStream.Seek(ImageStartPOS, SeekOrigin.Begin)
                 Dim lzssdata = br.ReadBytes(ImageFileLength)
                 Dim UncompressedDataBytes = DecompressLZSS(lzssdata, lzsszsize)
-                DecodeRawImage(UncompressedDataBytes, ImageWidth, ImageHeight, ExportTEX)
+
+                'Lets Check for Palletization
+                If RGBAType = 512 Then
+                    Dim ImageData = New Byte(UncompressedDataBytes.Length - &H400) {}
+                    Array.Copy(UncompressedDataBytes, ImageData, UncompressedDataBytes.Length - &H400)
+                    Dim PaletteData = New Byte(&H400) {}
+                    Array.Copy(UncompressedDataBytes, UncompressedDataBytes.Length - &H400, PaletteData, 0, &H400)
+                    Dim ColorPalette = ConvertBytesToPalette(PaletteData)
+                    To8bppImage(ImageData, ColorPalette, ImageWidth, ImageHeight, ExportTEX)
+
+                Else
+                    DecodeRawImage(UncompressedDataBytes, ImageWidth, ImageHeight, ExportTEX)
+                End If
+
             Else
                 MessageBox.Show("Unsupported Image to Extraction")
                 Exit Function
             End If
         End Using
-
-        'MessageBox.Show("Extracted TEX")
     End Function
 
 
@@ -579,6 +602,7 @@ Public Class Form1
         MessageBox.Show("Created new PC TEX Succesfully")
     End Function
 
+
     'PC->VITA TEX CONVERSION
     Private Sub PCVitaTEXToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PCVitaTEXToolStripMenuItem.Click
         Dim WorkingVitaTEXFile = ""
@@ -799,37 +823,64 @@ Public Class Form1
 
         Return dst
     End Function
-    Function DecodeRawImage(data As Byte(), width As UInt16, height As UInt16, exportimage As String)
-        Dim newData As Byte() = New Byte(data.Length - 1) {}
-
-        For x As Integer = 0 To data.Length - 1 Step 4
-            Dim pixel As Byte() = New Byte(3) {}
-            Array.Copy(data, x, pixel, 0, 4)
-            Dim r As Byte = pixel(0)
-            Dim g As Byte = pixel(1)
-            Dim b As Byte = pixel(2)
-            Dim a As Byte = pixel(3)
-            Dim newPixel As Byte() = New Byte() {b, g, r, a}
-            Array.Copy(newPixel, 0, newData, x, 4)
-        Next
-
-        data = newData
-
-        Using stream = New MemoryStream(data)
-
+    Function DecodeRawImage(ImageData As Byte(), width As UInt16, height As UInt16, exportimage As String)
+        Using stream = New MemoryStream(ImageData)
             Using bmp = New Bitmap(width, height, PixelFormat.Format32bppArgb)
                 Dim bmpData As BitmapData = bmp.LockBits(New Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.[WriteOnly], bmp.PixelFormat)
                 Dim pNative As IntPtr = bmpData.Scan0
-                Marshal.Copy(data, 0, pNative, data.Length)
+                Marshal.Copy(ImageData, 0, pNative, ImageData.Length)
                 bmp.UnlockBits(bmpData)
                 bmp.Save(exportimage)
             End Using
         End Using
     End Function
+    Public Shared Function ConvertBytesToPalette(bytes As Byte()) As ColorPalette
+        ' Assuming 8bpp RGBA format, each color has 4 bytes
+        Dim numColors As Integer = bytes.Length \ 4
+        Dim paletteSize As Integer = numColors
+
+        ' Ensure palette size is within bounds (maximum 256 colors)
+        If paletteSize > 256 Then
+            paletteSize = 256
+        End If
+
+        Dim palette As ColorPalette = New Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette
+        For i As Integer = 0 To paletteSize - 1
+            Dim r As Byte = bytes(i * 4 + 0)
+            Dim g As Byte = bytes(i * 4 + 1)
+            Dim b As Byte = bytes(i * 4 + 2)
+            Dim a As Byte = bytes(i * 4 + 3)
+
+            palette.Entries(i) = Color.FromArgb(a, r, g, b)
+        Next
+
+        Return palette
+    End Function
+    Function To8bppImage(ImageData As Byte(), PaletteData As ColorPalette, width As UInt16, height As UInt16, exportimage As String)
+        Using bmp = New Bitmap(width, height, PixelFormat.Format8bppIndexed)
+            Dim bmpData As BitmapData = bmp.LockBits(New Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.[WriteOnly], bmp.PixelFormat)
+
+            'Create color table
+            bmp.Palette = PaletteData
+
+            Dim pNative As IntPtr = bmpData.Scan0
+            Marshal.Copy(ImageData, 0, pNative, ImageData.Length)
+            bmp.UnlockBits(bmpData)
+            bmp.Save(exportimage, ImageFormat.Png)
+        End Using
+    End Function
+
+    'Exit buttons
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
         MessageBox.Show("Dungeon Travelers 2-2 Toolkit Created by @Yuviapp" & vbNewLine & "Combination of tools that will help you extract and created PCK, and TEX files.")
     End Sub
     Private Sub ExitToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem1.Click
         Application.Exit()
     End Sub
+
+    'Extra
+    Private Sub RawBytesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RawBytesToolStripMenuItem.Click
+        ImageTest.Show()
+    End Sub
+
 End Class
